@@ -28,10 +28,11 @@ mongoose.model('MyModel', MyModelSchema);
 */
 
 
+
 var mongoose = require('mongoose');
 
 var searchSchema = new mongoose.Schema({
-	prop: String
+	name: { type: String, required: true }
 });
 
 mongoose.model('searchSchema', searchSchema);

@@ -27,10 +27,12 @@ mongoose.model('MyModel', MyModelSchema);
 
 */
 
+
+
 var mongoose = require('mongoose');
 
 var furtherSchema = new mongoose.Schema({
-	prop: String
+	name: { type: String, required: true }
 });
 
 mongoose.model('furtherSchema', furtherSchema);

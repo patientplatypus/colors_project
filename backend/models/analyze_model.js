@@ -27,10 +27,13 @@ mongoose.model('MyModel', MyModelSchema);
 
 */
 
+
+
+
 var mongoose = require('mongoose');
 
 var analyzeSchema = new mongoose.Schema({
-	prop: String
+	name: { type: String, required: true }
 });
 
 mongoose.model('analyzeSchema', analyzeSchema);

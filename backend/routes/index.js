@@ -56,41 +56,49 @@ var search_conn  = mongoose.createConnection(process.env.colors_search_conn);
 var express = require('express');
 var router = express.Router();
 
-var analyze_routing = analyze_conn.model('analyzeSchema');
-var further_routing = analyze_conn.model('searchSchema');
-var search_routing = analyze_conn.model('furtherSchema');
+var analyzeconn = require('../db/analyze_db'), 
+  analyzemodel = analyzeconn.model('analyzeSchema');
+
+var furtherconn = require('../db/further_db'), 
+  furthermodel = furtherconn.model('furtherSchema');
+
+var searchconn = require('../db/search_db'), 
+  searchmodel = searchconn.model('searchSchema');
+
+var returnobj = [];
 
 
-
-//var analyze = require('../models/analyze_model');
-//var further = require('../models/further_model');
-//var search = require('../models/search_model');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
 
-  analyze_routing.find({},function(err,posts){
+  analyzemodel.find({},function(err,posts){
     if(err) console.log(err);
 
-   res.json(posts);
+   returnobj.push(posts);
+  // res.json(posts);
 
   });
 
-  further_routing.find({},function(err,posts){
+  searchmodel.find({},function(err,posts){
     if(err) console.log(err);
 
-   res.json(posts);
+    returnobj.push(posts);
+  // res.json(posts);
 
   });
 
-  search_routing.find({},function(err,posts){
+  furthermodel.find({},function(err,posts){
     if(err) console.log(err);
 
-   res.json(posts);
+    returnobj.push(posts);
+  // res.json(posts);
 
   });
 
+  res.json(returnobj);
 
+/**/
 });
 
 module.exports = router;
