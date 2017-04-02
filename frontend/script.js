@@ -150,50 +150,25 @@ function srchmk(){
 			//here				
 			response.forEach(function(res){
 				console.log(res.link);
-				$('body').append("<a href='http://i.imgur.com/"+res.link.toString()+".jpg'><img src='http://i.imgur.com/"+res.link.toString()+".jpg' alt='"+res.link.toString()+"'></a>");
+				$('body').append("<div class='picturebox' id='"+res.link.toString()+"'> <a href='http://i.imgur.com/"+res.link.toString()+".jpg'><img src='http://i.imgur.com/"+res.link.toString()+".jpg' alt='"+res.link.toString()+"'></a></div>");
 				
-				//console.log($("img[src$='"+res.link.toString()+"']").attr("src"));
-				//console.log($("img").find(""))
-				/*
-				console.log($('img').find('img[src$="'+res.link.toString()+'"]'));
-				
-				$('img').find('img[src$="'+res.link.toString()+'"]').load(function(){
-					console.log("yolo");
-					clrthif($(this));
-				});
-				*/
 				var imageSend = new Image();
 				imageSend.src = "http://i.imgur.com/"+res.link.toString()+".jpg";
 				imageSend.crossOrigin = "Anonymous";
-				//var imgWidth = image.width || image.naturalWidth;
-				//var imgHeight = image.height || image.naturalHeight;
 				imageSend.onload = (function(){
 					console.log("image.width ", imageSend.width);
 					console.log("image.naturalWidth ", imageSend.naturalWidth);
 					console.log(imageSend);
-					clrthif(imageSend);
+					clrthif(imageSend, res.link.toString());
 				})
 	
 			});
-
-
-			/*
-			$('img').each(function(){
-				$(this).load(function(){
-					console.log("yolo");
-					console.log(jQuery.type($(this[0])));
-					console.log($(this)[0]);
-					clrthif($(this[0]));
-				});
-			});
-			*/
-
 
 		});
 }
 
 
-
+//CORS errors for the website below - i emailed the guy, but not holding out hope
 //http://mkweb.bcgsc.ca/colorsummarizer/?api
 //http://mkweb.bcgsc.ca/color-summarizer/?url=static.flickr.com/37/88847543_d1eb68c5b9_m.jpg&precision=low&json=1
 
@@ -215,11 +190,9 @@ function coloranalyzer(){
 }
 
 
-function clrthif(image){
+//$("img[src$='greendot.gif'][name='BS']")
 
-//	$('html').html("on", "load", function(){
-
-//		$("img").each(function(){
+function clrthif(image, imagesource){
 
 			console.log("thiefy");
 
@@ -227,13 +200,47 @@ function clrthif(image){
 			var maincolor = colorThief.getColor(image);
 
 			var colorThief = new ColorThief();
-			var palettecolor = colorThief.getPalette(image, 8);
+			var palettecolor = colorThief.getPalette(image, 5);
 
 			console.log("maincolor ", maincolor);
 			console.log("palettecolor ", palettecolor);
-//		});
 
-//	});
+			//change dom to put in the colorthief settings
+
+			var r = maincolor[0];
+			var g = maincolor[1];
+			var b = maincolor[2];
+
+			var rgb = "rgb("+r.toString()+","+g.toString()+","+b.toString()+")";
+
+			var picturebox = $('#'+imagesource);
+
+			picturebox.css("background-color",rgb);
+			console.log("picturebox: ", picturebox);
+
+
+			for(var i = 0; i<=4; i++){
+
+				picturebox.append("<div class='pallete' id='"+i.toString()+"'></div>");
+				var r = palettecolor[i][0];
+				var g = palettecolor[i][1];
+				var b = palettecolor[i][2];
+				var rgb = "rgb("+r.toString()+","+g.toString()+","+b.toString()+")";
+				picturebox.find("#"+i.toString()).css("background-color", rgb);
+
+			}
+
+
+
+		
+			//picturebox.append("<div class='pallete' id='1'></div>");
+		
+			//console.log(palettecolor[1])
+			//var r = palettecolor[1][0];
+			//var g = palettecolor[1][1];
+			//var b = palettecolor[1][2];
+			//var rgb = "rgb("+r.toString()+","+g.toString()+","+b.toString()+")";
+			//picturebox.find("#1").css("background-color", rgb);
 
 }
 
