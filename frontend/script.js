@@ -1,9 +1,35 @@
 
+
+
+/*
+function imgrImg(linkstring,doneornot){
+	var url = "https://api.imgur.com/3/image/" + linkstring;
+	var imgurIdrequest = $.ajax({
+		url: url,
+		type: "GET",
+		datatype: "json",
+		headers: {
+			"Authorization":"Client-ID 878a89984952e6d"
+		}
+	});
+
+	imgurIdrequest.done(function(response){
+		console.log("imgurIdYata", response);
+		srch(response.link, doneornot);
+	});
+
+}
+*/
+
+
+
+
 function imgr(linkstring){
 //https://api.imgur.com/3/image/{id}
 //https://api.imgur.com/3/gallery/t/
 //"https://api.imgur.com/3/gallery/search/q?=" + search term + "&q_type=jpeg
-	var url = "https://api.imgur.com/3/gallery/t/" + linkstring;
+//https://api.imgur.com/3/gallery/search?q={search term}
+	var url = "https://api.imgur.com/3/gallery/search?q=" + linkstring + "&q_type=image/jpeg";
     		console.log("url: ", url);
 
 			var imgurrequest = $.ajax({
@@ -12,7 +38,10 @@ function imgr(linkstring){
 			    datatype: "json",
 			    headers: {
 					"Authorization":"Client-ID 878a89984952e6d"
-				}
+				},
+			//	data: {
+			//		type:"image/jpeg"
+			//	}
 			});
 
 			imgurrequest.done(function(response){
