@@ -1,9 +1,9 @@
 
 
-
 /*
+
 function imgrImg(linkstring,doneornot){
-	var url = "https://api.imgur.com/3/image/" + linkstring;
+	var url = "https://api.imgur.com/3/gallery/image/" + linkstring;
 	var imgurIdrequest = $.ajax({
 		url: url,
 		type: "GET",
@@ -29,7 +29,7 @@ function imgr(linkstring){
 //https://api.imgur.com/3/gallery/t/
 //"https://api.imgur.com/3/gallery/search/q?=" + search term + "&q_type=jpeg
 //https://api.imgur.com/3/gallery/search?q={search term}
-	var url = "https://api.imgur.com/3/gallery/search?q=" + linkstring + "&q_type=image/jpeg";
+	var url = "https://api.imgur.com/3/gallery/search?q_all=" + linkstring + "&q_type=png";
     		console.log("url: ", url);
 
 			var imgurrequest = $.ajax({
@@ -39,20 +39,26 @@ function imgr(linkstring){
 			    headers: {
 					"Authorization":"Client-ID 878a89984952e6d"
 				},
-			//	data: {
-			//		type:"image/jpeg"
-			//	}
+
 			});
 
 			imgurrequest.done(function(response){
 				console.log("imgurYata", response);
+
 				for(var i = 0; i<10; i++){
+
+					//imgrImg(response.data[i].link, 'not');
+
+					
 					if (i <9){
 						srch(response.data[i].link, "not");
 					}else{
 						srch(response.data[i].link, "done");
 					}
+
+					
 				}
+
 			});
 }
 
@@ -133,6 +139,9 @@ $(function(){
 
     	$("form").submit(function(evt){
     		evt.preventDefault();
+    		$("a").each(function(){
+    			$(this).remove();
+    		});
     		if ($(".inputsearch").val() != ""){
     			srchdltall();
     			imgr($(".inputsearch").val());
