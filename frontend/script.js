@@ -21,7 +21,7 @@ function imgrImg(linkstring,doneornot){
 }
 */
 
-
+var localimageurls = [];
 
 
 function imgr(linkstring){
@@ -92,6 +92,8 @@ function srch(linkstring,doneornot){
 	var url = 'http://localhost:3000/search';
 	console.log(linkstring);
 
+	localimageurls.push(linkstring);
+
 	var data = {
 		link: linkstring
 		};
@@ -148,13 +150,93 @@ function srchmk(){
 			//here				
 			response.forEach(function(res){
 				console.log(res.link);
-				$('body').append("<a href='http://i.imgur.com/"+res.link.toString()+"'><img src='http://i.imgur.com/"+res.link.toString()+".jpg' alt='"+res.link.toString()+"'></a>");
+				$('body').append("<a href='http://i.imgur.com/"+res.link.toString()+".jpg'><img src='http://i.imgur.com/"+res.link.toString()+".jpg' alt='"+res.link.toString()+"'></a>");
+				
+				//console.log($("img[src$='"+res.link.toString()+"']").attr("src"));
+				//console.log($("img").find(""))
+				/*
+				console.log($('img').find('img[src$="'+res.link.toString()+'"]'));
+				
+				$('img').find('img[src$="'+res.link.toString()+'"]').load(function(){
+					console.log("yolo");
+					clrthif($(this));
+				});
+				*/
+				var imageSend = new Image();
+				imageSend.src = "http://i.imgur.com/"+res.link.toString()+".jpg";
+				imageSend.crossOrigin = "Anonymous";
+				//var imgWidth = image.width || image.naturalWidth;
+				//var imgHeight = image.height || image.naturalHeight;
+				imageSend.onload = (function(){
+					console.log("image.width ", imageSend.width);
+					console.log("image.naturalWidth ", imageSend.naturalWidth);
+					console.log(imageSend);
+					clrthif(imageSend);
+				})
+	
 			});
-		
+
+
+			/*
+			$('img').each(function(){
+				$(this).load(function(){
+					console.log("yolo");
+					console.log(jQuery.type($(this[0])));
+					console.log($(this)[0]);
+					clrthif($(this[0]));
+				});
+			});
+			*/
 
 
 		});
 }
+
+
+
+//http://mkweb.bcgsc.ca/colorsummarizer/?api
+//http://mkweb.bcgsc.ca/color-summarizer/?url=static.flickr.com/37/88847543_d1eb68c5b9_m.jpg&precision=low&json=1
+
+function coloranalyzer(){
+
+	var imagetosend = 'http://i.imgur.com/'+localimageurls[0]+'.jpg';
+
+	var url = 'http://mkweb.bcgsc.ca/color-summarizer/?url='+imagetosend+'&precision=low&json=1';
+
+	var analyzeretrieve = $.ajax({
+		type:"GET",
+		url:url,
+	});
+		
+	analyzeretrieve.done(function(res){
+		console.log("analyzeretrieveYATA: ", res);
+	});
+
+}
+
+
+function clrthif(image){
+
+//	$('html').html("on", "load", function(){
+
+//		$("img").each(function(){
+
+			console.log("thiefy");
+
+			var colorThief = new ColorThief();
+			var maincolor = colorThief.getColor(image);
+
+			var colorThief = new ColorThief();
+			var palettecolor = colorThief.getPalette(image, 8);
+
+			console.log("maincolor ", maincolor);
+			console.log("palettecolor ", palettecolor);
+//		});
+
+//	});
+
+}
+
 
 
 
@@ -170,7 +252,10 @@ $(function(){
     		if ($(".inputsearch").val() != ""){
     			srchdltall();
     			imgr($(".inputsearch").val());
-    		}
+    	//		coloranalyzer();
+    	//		clrthif();
+    		}	
+
     	});
 
 });
