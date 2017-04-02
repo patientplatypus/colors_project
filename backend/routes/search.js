@@ -9,7 +9,7 @@ var searchconn = require('../db/search_db'),
 /*this should delete all entries in the search and clear the db*/
 
 router.delete('/',function(req,res,next){
-  searchmodel.findByIdAndRemove({},function(err,post){
+  searchmodel.remove({},function(err,post){
     if (err) console.log(err);
 
     res.json({
@@ -23,7 +23,7 @@ router.delete('/',function(req,res,next){
 
 router.post('/',function(req,res,next){
   var newSearch = new searchmodel({
-    name: req.body.name
+    link: req.body.link
     /*title: req.body.title,
     body: req.body.body*/
   });
