@@ -24,6 +24,27 @@ function imgrImg(linkstring,doneornot){
 var localimageurls = [];
 
 
+//utility function
+
+function adjustoffset(base, adjusted, leftadjust, topadjust){
+
+	$(adjusted).offset(function(){
+		newPos = new Object();
+		var target = $(base).offset();
+		newPos.left = target.left + leftadjust*($(base).width());
+		newPos.top = target.top + topadjust*($(base).height());
+		//console.log(adjusted, " left ", $(adjusted).offset().left, " top ", $(adjusted).offset().top);
+		return newPos;
+	});
+
+}
+
+
+
+
+
+
+
 function imgr(linkstring){
 //https://api.imgur.com/3/image/{id}
 //https://api.imgur.com/3/gallery/t/
@@ -160,6 +181,7 @@ function srchmk(){
 					console.log("image.naturalWidth ", imageSend.naturalWidth);
 					console.log(imageSend);
 					clrthif(imageSend, res.link.toString());
+					coloranalyzer(res.link.toString());
 				})
 	
 			});
@@ -172,9 +194,12 @@ function srchmk(){
 //http://mkweb.bcgsc.ca/colorsummarizer/?api
 //http://mkweb.bcgsc.ca/color-summarizer/?url=static.flickr.com/37/88847543_d1eb68c5b9_m.jpg&precision=low&json=1
 
-function coloranalyzer(){
+//adjustoffset(base, adjusted, leftadjust, topadjust)
 
-	var imagetosend = 'http://i.imgur.com/'+localimageurls[0]+'.jpg';
+
+function coloranalyzer(adjustbox){
+
+	var imagetosend = 'http://i.imgur.com/'+adjustbox+'.jpg';
 
 	var url = 'http://mkweb.bcgsc.ca/color-summarizer/?url='+imagetosend+'&precision=low&json=1';
 
@@ -184,11 +209,70 @@ function coloranalyzer(){
 	});
 		
 	analyzeretrieve.done(function(res){
-		console.log("analyzeretrieveYATA: ", res);
+		//console.log("analyzeretrieveYATA: ", res);
+		console.log("analyzeYataTOFINGLONG");
+		var obj = JSON.parse(res);
+	//	console.log(obj);
+		var tagstring = "";
+		
+		/*
+		obj.clusters.forEach(function(tagindex){
+			tagstring = tagindex.tags;
+		});
+		*/
+
+
+		for(var i=0;i<5;i++){
+			var indextags = obj.clusters[i];
+		//	console.log("indextags: ", indextags);
+			tagstring = tagstring + ":" + indextags.tags; 
+		}
+		
+		console.log("tagstringlength", tagstring.length);
+		
+		//currently not working, don't know why....
+		/*for(var i=0;i<tagstring.length;i++){
+			if (tagstring[i]==":"){
+				tagstring[i] = " ";
+			}
+		}*/
+		
+		console.log("tagstring: ", tagstring);
+		$("#"+adjustbox).find("a").after("<p class='description' id='text4"+adjustbox+"'>"+tagstring+"</p>");
+		//$("body").append("<p id='text4"+adjustbox+"'>"+tagstring+"</p>");
+		//adjustoffset($("#"+adjustbox), $("#text4"+adjustbox),0.2,0.2);
 	});
 
 }
 
+
+
+//have to use google chrome extension allow control allow origin for this api to work....is there a better fix?
+
+//can only get one color name at a time - have to ping their servers until kicked - cant use....
+
+
+function clrapi(rgb, picturebox, i){
+	var url = 'http://thecolorapi.com/id?rgb='+rgb;//+rgbarray[0];//+'&rgb='+rgbarray[1]//+'&rgb='+rgbarray[2]+'&rgb='+rgbarray[3]+'&rgb='+rgbarray[4];
+	var colorapiget = $.ajax({
+		type:"GET",
+		url:url,
+
+	});
+		
+	colorapiget.done(function(res){
+		console.log("colorapigetYATA: ", res);
+		//toappend.append("<div class='colorname'><p>"+res.name.value+"</p></div>")
+		$("body").append("<div class='colorname' id='"+picturebox+"'_'"+i.toString()+"'><p>"+res.name.value+"</p></div>");
+		//adjustoffset(picturebox,$('.colorname').find("#"+i.toString()),1,i*.1);
+
+	});
+}
+
+
+
+
+//var rgbarray = [];
 
 //$("img[src$='greendot.gif'][name='BS']")
 
@@ -218,6 +302,7 @@ function clrthif(image, imagesource){
 			picturebox.css("background-color",rgb);
 			console.log("picturebox: ", picturebox);
 
+			rgbarray = [];
 
 			for(var i = 0; i<=4; i++){
 
@@ -226,11 +311,14 @@ function clrthif(image, imagesource){
 				var g = palettecolor[i][1];
 				var b = palettecolor[i][2];
 				var rgb = "rgb("+r.toString()+","+g.toString()+","+b.toString()+")";
+				//rgbarray.push(rgb);
 				picturebox.find("#"+i.toString()).css("background-color", rgb);
-
+			//	picturebox.find("#"+i.toString()).on("load",function(){
+			//	clrapi(rgb, picturebox, i);
+			//	});
 			}
 
-
+			//clrapi();
 
 		
 			//picturebox.append("<div class='pallete' id='1'></div>");
