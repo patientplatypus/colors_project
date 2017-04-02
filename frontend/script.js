@@ -29,7 +29,26 @@ function imgr(linkstring){
 //https://api.imgur.com/3/gallery/t/
 //"https://api.imgur.com/3/gallery/search/q?=" + search term + "&q_type=jpeg
 //https://api.imgur.com/3/gallery/search?q={search term}
-	var url = "https://api.imgur.com/3/gallery/search?q_all=" + linkstring + "&q_type=png";
+
+	var convertedstring = "";
+
+	for(var i = 0; i<linkstring.length; i++){
+		if(linkstring[i]===" "){
+			var str1 = convertedstring;
+			var str2 = "&";
+			convertedstring = str1.concat(str2);
+		}else{
+			var str1 = convertedstring;
+			var str2 = linkstring[i];
+			convertedstring = str1.concat(str2);
+		}
+	}
+
+	console.log(linkstring);
+
+
+
+	var url = "https://api.imgur.com/3/gallery/search?q_all=" + convertedstring + "&q_type=jpg";
     		console.log("url: ", url);
 
 			var imgurrequest = $.ajax({
@@ -45,19 +64,25 @@ function imgr(linkstring){
 			imgurrequest.done(function(response){
 				console.log("imgurYata", response);
 
-				for(var i = 0; i<10; i++){
 
-					//imgrImg(response.data[i].link, 'not');
-
-					
-					if (i <9){
-						srch(response.data[i].link, "not");
-					}else{
-						srch(response.data[i].link, "done");
+				if (response.data.length < 10) {
+					for (var i = 0; i<response.data.length; i++){
+						if(i<response.data.length-1){
+							srch(response.data[i].cover, "not");
+						}else{
+							srch(response.data[i].cover, "done");
+						}
 					}
-
-					
+				}else{
+					for (var i = 0; i<10; i++){
+						if(i<9){
+							srch(response.data[i].cover, "not");
+						}else{
+							srch(response.data[i].cover, "done");
+						}
+					}
 				}
+
 
 			});
 }
@@ -123,7 +148,7 @@ function srchmk(){
 			//here				
 			response.forEach(function(res){
 				console.log(res.link);
-				$('body').append("<a href='"+res.link.toString()+"'><img src='"+res.link.toString()+"' alt='"+res.link.toString()+"'></a>");
+				$('body').append("<a href='http://i.imgur.com/"+res.link.toString()+"'><img src='http://i.imgur.com/"+res.link.toString()+".jpg' alt='"+res.link.toString()+"'></a>");
 			});
 		
 
